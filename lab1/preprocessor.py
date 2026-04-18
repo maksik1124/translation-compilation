@@ -9,7 +9,6 @@ invalid_chars_pattern = r"[^\t\n\r -~А-Яа-яЁё]"
 with open("lab1/test.cpp", "r", encoding="utf-8") as f:
     content = f.read()
 
-# Проверка многострочных комментариев
 balance = 0
 last_open = None
 
@@ -28,7 +27,6 @@ if balance > 0:
     print(f"Ошибка: незакрытый /* начиная с индекса {last_open}")
     raise SystemExit(1)
 
-# Проверка недопустимых символов
 invalid_char = re.search(invalid_chars_pattern, content)
 if invalid_char:
     print(
@@ -36,14 +34,12 @@ if invalid_char:
     )
     raise SystemExit(1)
 
-# Очистка кода
 content = re.sub(many_lines_comments_pattern, "", content, flags=re.DOTALL)
 content = re.sub(one_line_comments_pattern, "", content)
 content = re.sub(tabs_spaces_pattern, "", content, flags=re.MULTILINE)
 content = re.sub(extra_spaces_pattern, " ", content)
-content = re.sub(r"\n\s*\n+", "\n", content).strip()
+content = re.sub(r"^\n+|\n+\Z", "", content, flags=re.MULTILINE)
 
-# Проверка, что файл не пустой
 if not content:
     print("Ошибка: файл пуст.")
     raise SystemExit(1)
